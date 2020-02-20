@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESocketCommon", "ESocketCommon\ESocketCommon.csproj", "{911A8B31-74C0-40BC-83C3-4A244BF144CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESocketServer", "ESocketServer\ESocketServer.csproj", "{31382B51-0254-47AD-AB5C-009E67EC80AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE} = {911A8B31-74C0-40BC-83C3-4A244BF144CE}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESocketClient", "ESocketClient\ESocketClient.csproj", "{A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE} = {911A8B31-74C0-40BC-83C3-4A244BF144CE}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESocketServerExample", "ESocketServerExample\ESocketServerExample.csproj", "{6459ADD3-85FC-4433-91B4-D00032F96AA4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31382B51-0254-47AD-AB5C-009E67EC80AC} = {31382B51-0254-47AD-AB5C-009E67EC80AC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESocketClientExample", "ESocketClientExample\ESocketClientExample.csproj", "{2AF76B20-6E0D-4120-802D-AAB526708456}"
+	ProjectSection(ProjectDependencies) = postProject
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE} = {911A8B31-74C0-40BC-83C3-4A244BF144CE}
+		{A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B} = {A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESocketServerLauncher", "ESocketServerLauncher\ESocketServerLauncher.csproj", "{D944C782-B93C-4F2F-AE27-11F341D278CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31382B51-0254-47AD-AB5C-009E67EC80AC} = {31382B51-0254-47AD-AB5C-009E67EC80AC}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{911A8B31-74C0-40BC-83C3-4A244BF144CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31382B51-0254-47AD-AB5C-009E67EC80AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31382B51-0254-47AD-AB5C-009E67EC80AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31382B51-0254-47AD-AB5C-009E67EC80AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31382B51-0254-47AD-AB5C-009E67EC80AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7DA9583-CCAF-44D0-AB93-5FBEDF71C27B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6459ADD3-85FC-4433-91B4-D00032F96AA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6459ADD3-85FC-4433-91B4-D00032F96AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6459ADD3-85FC-4433-91B4-D00032F96AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6459ADD3-85FC-4433-91B4-D00032F96AA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF76B20-6E0D-4120-802D-AAB526708456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF76B20-6E0D-4120-802D-AAB526708456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF76B20-6E0D-4120-802D-AAB526708456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF76B20-6E0D-4120-802D-AAB526708456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D944C782-B93C-4F2F-AE27-11F341D278CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D944C782-B93C-4F2F-AE27-11F341D278CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D944C782-B93C-4F2F-AE27-11F341D278CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D944C782-B93C-4F2F-AE27-11F341D278CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F207BF11-CD57-4CE4-9F08-58CDC2C8F99C}
+	EndGlobalSection
+EndGlobal

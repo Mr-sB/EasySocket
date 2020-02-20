@@ -1,0 +1,11 @@
+﻿{
+  "ApplicationConfig": {
+    "BaseDirectory": "Example",
+    "AssemblyFileName": "ESocketServerExample",
+    "TypeWithNamespace": "ESocket.Example.Server.ExampleApplication"
+  },
+  "ConnectConfig": {
+    "ServerIP": "127.0.0.1",
+    "Port": 5000
+  }
+}
