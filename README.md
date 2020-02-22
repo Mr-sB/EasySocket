@@ -80,4 +80,4 @@ public static Dictionary<string, object> AddParameter(this Dictionary<string, ob
 public static bool TryGetParameter<T>(this Dictionary<string, object> parameters, string key, out T parameter);
 ```
 ## Example
-* There is a example server application in `ESocket-OnPremise-Server-SDK/Example`, and a example client application in `ESocket-OnPremise-Server-SDK/Example/Client`.
+* There is an example server application in `ESocket-OnPremise-Server-SDK/Example`, and an example client application in `ESocket-OnPremise-Server-SDK/Example/Client`.
