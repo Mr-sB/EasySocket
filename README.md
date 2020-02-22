@@ -81,3 +81,5 @@ public static bool TryGetParameter<T>(this Dictionary<string, object> parameters
 ```
 ## Example
 * There is an example server application in `ESocket-OnPremise-Server-SDK/Example`, and an example client application in `ESocket-OnPremise-Server-SDK/Example/Client`.
+## Thanks
+* Thanks for LitJSON/litjson to provide Json serialize/deserialize functions. https://github.com/LitJSON/litjson
