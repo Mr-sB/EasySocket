@@ -1,7 +1,7 @@
 # EasySocket
 Easy Network communication. No need to care about socket, just use the API, and you can easily done Network communication.
 
-## Feather
+## Features
 * Package socket conmunication, and you do not need to care about socket.
 * Provide server and client API, all you need is inherit the base class, and you can easily done network code.
 * Use LitJson to serialize/deserialize data inside, just put the data in send function, no need to serialize/deserialize again.
