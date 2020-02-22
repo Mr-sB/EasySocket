@@ -79,3 +79,5 @@ public static Dictionary<string, object> NewParameters => new Dictionary<string,
 public static Dictionary<string, object> AddParameter(this Dictionary<string, object> parameters, string key, object value);
 public static bool TryGetParameter<T>(this Dictionary<string, object> parameters, string key, out T parameter);
 ```
+## Example
+* There is a example server application in `ESocket-OnPremise-Server-SDK/Example`, and a example client application in `ESocket-OnPremise-Server-SDK/Example/Client`.
