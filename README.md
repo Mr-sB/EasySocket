@@ -62,7 +62,7 @@ void OnConnectStateChanged(ConnectCode connectCode);
 void OnOperationRequest(OperationRequest request);
 void OnOperationResponse(OperationResponse response);
 ```
-* Create a `ESocketPeer` to conect to server and listen server's messages.
+* Create a `ESocketPeer` to connect to server and listen server's messages.
 ```c#
 var peer = new ESocketPeer(%IPeerListener);
 //Connect
