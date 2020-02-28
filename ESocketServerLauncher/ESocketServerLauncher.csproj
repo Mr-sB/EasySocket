@@ -55,8 +55,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)*.*" "$(SolutionDir)ESocket-OnPremise-Server-SDK\bin_Launcher"
-copy "$(TargetDir)*.*" "D:\ESocket-OnPremise-Server-SDK\bin_Launcher"</PostBuildEvent>
-  </PropertyGroup>
 </Project>
