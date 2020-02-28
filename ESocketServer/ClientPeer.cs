@@ -40,6 +40,15 @@ namespace ESocket.Server
         {
             switch (model.PackageCode)
             {
+                case PackageCode.Connect:
+                    var connectCode = model.GetOperationConnect().ConnectCode;
+                    switch (connectCode)
+                    {
+                        case ConnectCode.Disconnect:
+                            Disconnect();
+                            break;
+                    }
+                    break;
                 case PackageCode.Heartbeat:
                     //回应心跳包
                     SendHeartbeat();

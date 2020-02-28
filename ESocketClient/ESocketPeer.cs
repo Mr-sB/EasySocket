@@ -41,8 +41,9 @@ namespace ESocket.Client
         public override void Disconnect()
         {
             if (ConnectCode == ConnectCode.Disconnect) return;
-            if (mListener != null)
-                mListener.OnConnectStateChanged(ConnectCode.Disconnect);
+            //发送关闭连接信息
+            SendConnect(ConnectCode.Disconnect);
+            mListener?.OnConnectStateChanged(ConnectCode.Disconnect);
             mSendHeartbeatThread.Abort();
             base.Disconnect();
         }

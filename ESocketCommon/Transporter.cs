@@ -172,7 +172,7 @@ namespace ESocket.Common
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(string.Format("中断连接\nMessage:{0}\nStackTrace:{1}", e.Message, e.StackTrace));
+                        Console.WriteLine("中断连接\nMessage:{0}\nStackTrace:{1}", e.Message, e.StackTrace);
                         Disconnect();
                         return;
                     }
@@ -184,7 +184,7 @@ namespace ESocket.Common
                     //拼接之后的结果
                     recString = recStringBuilder.Append(recString).ToString();
                     string[] packageJsons = recString.Split(ESocketConst.PackageSeparator, StringSplitOptions.RemoveEmptyEntries);
-                    if (packageJsons != null && packageJsons.Length > 0)
+                    if (packageJsons.Length > 0)
                     {
                         //没有完整包
                         if (packageJsons.Length == 1 && !recString.EndsWith(ESocketConst.SendPackageEndFlag)) continue;
