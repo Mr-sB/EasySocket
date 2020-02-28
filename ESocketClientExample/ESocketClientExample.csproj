@@ -59,4 +59,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(TargetDir)*.*" "$(SolutionDir)ESocket-OnPremise-Server-SDK\Example\Client"</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp -r "$(TargetDir)." "$(SolutionDir)ESocket-OnPremise-Server-SDK\Example\Client"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

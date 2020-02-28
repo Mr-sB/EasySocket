@@ -64,4 +64,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)ESocket-OnPremise-Server-SDK\SDK\$(TargetName)"
+      copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)ESocket-OnPremise-Server-SDK\SDK\$(TargetName)"</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(TargetDir)$(TargetName).dll" "$(SolutionDir)ESocket-OnPremise-Server-SDK\SDK\$(TargetName)"
+      cp "$(TargetDir)$(TargetName).xml" "$(SolutionDir)ESocket-OnPremise-Server-SDK\SDK\$(TargetName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
