@@ -124,6 +124,12 @@
             <param name="count">长度</param>
             <returns>字符串</returns>
         </member>
+        <member name="M:ESocket.Common.Tools.TimeUtil.GetCurrentUtcTime">
+            <summary>
+            获取当前Utc时间
+            </summary>
+            <returns>Utc时间</returns>
+        </member>
         <member name="M:ESocket.Common.Tools.TimeUtil.GetDifferenceSeconds(System.DateTime,System.DateTime,System.Boolean)">
             <summary>
             获得time1-time2的时间差(秒)
@@ -140,6 +146,20 @@
             <param name="time">时间</param>
             <param name="signed">是否带符号</param>
             <returns>时间差(秒)</returns>
+        </member>
+        <member name="M:ESocket.Common.Tools.TimeUtil.GetTotalMilliseconds(System.DateTime)">
+            <summary>
+            获取time的总共微妙数
+            </summary>
+            <param name="time">时间</param>
+            <returns>微秒</returns>
+        </member>
+        <member name="M:ESocket.Common.Tools.TimeUtil.ParseFromMilliseconds(System.Int64)">
+            <summary>
+            将微秒数转换为时间
+            </summary>
+            <param name="milliseconds">微秒</param>
+            <returns>时间</returns>
         </member>
         <member name="T:ESocket.Common.OperationBase">
             <summary>
