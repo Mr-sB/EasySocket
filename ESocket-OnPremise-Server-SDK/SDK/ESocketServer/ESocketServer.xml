@@ -67,9 +67,19 @@
             客户类
             </summary>
         </member>
+        <member name="M:ESocket.Server.ClientPeer.ExceptionDisconnect">
+            <summary>
+            异常中断
+            </summary>
+        </member>
         <member name="M:ESocket.Server.ClientPeer.Disconnect">
             <summary>
-            断开连接
+            主动断开连接
+            </summary>
+        </member>
+        <member name="M:ESocket.Server.ClientPeer.BeDisconnected">
+            <summary>
+            被动断开连接
             </summary>
         </member>
         <member name="M:ESocket.Server.ClientPeer.OnReceive(ESocket.Common.PackageModel)">

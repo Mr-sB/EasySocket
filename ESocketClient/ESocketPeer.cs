@@ -15,6 +15,10 @@ namespace ESocket.Client
         /// </summary>
         private Thread mSendHeartbeatThread;
         /// <summary>
+        /// 发送心跳的线程是否停止,所有线程中数据同步
+        /// </summary>
+        private volatile bool mIsSendHeartbeatThreadStop;
+        /// <summary>
         /// 连接状态
         /// </summary>
         public ConnectCode ConnectCode { private set; get; } = ConnectCode.Disconnect;
@@ -36,16 +40,40 @@ namespace ESocket.Client
         }
 
         /// <summary>
-        /// 断开连接
+        /// 异常中断
         /// </summary>
-        public override void Disconnect()
+        protected override void ExceptionDisconnect()
         {
-            if (ConnectCode == ConnectCode.Disconnect) return;
+            DisconnectInternal();
+            base.ExceptionDisconnect();
+        }
+
+        /// <summary>
+        /// 主动断开连接
+        /// </summary>
+        public void Disconnect()
+        {
+            if (mSocket == null || ConnectCode == ConnectCode.Disconnect) return;
             //发送关闭连接信息
             SendConnect(ConnectCode.Disconnect);
+            DisconnectInternal();
+            base.DisconnectInternal();
+        }
+
+        /// <summary>
+        /// 被动断开连接
+        /// </summary>
+        private void BeDisconnected()
+        {
+            DisconnectInternal();
+            base.DisconnectInternal();
+        }
+
+        private new void DisconnectInternal()
+        {
             mListener?.OnConnectStateChanged(ConnectCode.Disconnect);
-            mSendHeartbeatThread.Abort();
-            base.Disconnect();
+            mIsSendHeartbeatThreadStop = true;
+            mSendHeartbeatThread = null;
         }
 
         /// <summary>
@@ -53,8 +81,7 @@ namespace ESocket.Client
         /// </summary>
         private void InitSendHeartbeatThread()
         {
-            mSendHeartbeatThread = new Thread(SendHeartbeatThread);
-            mSendHeartbeatThread.IsBackground = true;
+            mSendHeartbeatThread = new Thread(SendHeartbeatThread) {IsBackground = true};
             mSendHeartbeatThread.Start();
         }
 
@@ -64,7 +91,7 @@ namespace ESocket.Client
         private void SendHeartbeatThread()
         {
             if (mSocket == null) return;
-            while (true)
+            while (!mIsSendHeartbeatThreadStop)
             {
                 //发送心跳
                 var interval = LastSendHeartbeatTime.GetDifferenceSeconds();
@@ -94,7 +121,7 @@ namespace ESocket.Client
                             ConnectSuccess();
                             break;
                         case ConnectCode.Disconnect:
-                            Disconnect();
+                            BeDisconnected();
                             break;
                     }
                     mListener.OnConnectStateChanged(connectCode);

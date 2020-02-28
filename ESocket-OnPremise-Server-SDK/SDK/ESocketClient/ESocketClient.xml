@@ -9,6 +9,11 @@
             发送心跳的线程
             </summary>
         </member>
+        <member name="F:ESocket.Client.ESocketPeer.mIsSendHeartbeatThreadStop">
+            <summary>
+            发送心跳的线程是否停止,所有线程中数据同步
+            </summary>
+        </member>
         <member name="P:ESocket.Client.ESocketPeer.ConnectCode">
             <summary>
             连接状态
@@ -21,9 +26,19 @@
             <param name="serverIP">服务器IP</param>
             <param name="port">端口号</param>
         </member>
+        <member name="M:ESocket.Client.ESocketPeer.ExceptionDisconnect">
+            <summary>
+            异常中断
+            </summary>
+        </member>
         <member name="M:ESocket.Client.ESocketPeer.Disconnect">
             <summary>
-            断开连接
+            主动断开连接
+            </summary>
+        </member>
+        <member name="M:ESocket.Client.ESocketPeer.BeDisconnected">
+            <summary>
+            被动断开连接
             </summary>
         </member>
         <member name="M:ESocket.Client.ESocketPeer.InitSendHeartbeatThread">

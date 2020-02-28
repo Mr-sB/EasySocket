@@ -227,9 +227,19 @@
             监听客户端消息的线程
             </summary>
         </member>
+        <member name="F:ESocket.Common.Transporter.mIsClientThreadStop">
+            <summary>
+            监听客户端消息的线程是否停止,所有线程中数据同步
+            </summary>
+        </member>
         <member name="F:ESocket.Common.Transporter.mListenHeartbeatThread">
             <summary>
             检测心跳线程
+            </summary>
+        </member>
+        <member name="F:ESocket.Common.Transporter.mIsListenHeartbeatThreadStop">
+            <summary>
+            检测心跳线程是否停止,所有线程中数据同步
             </summary>
         </member>
         <member name="P:ESocket.Common.Transporter.LastListenHeartbeatTime">
@@ -248,9 +258,14 @@
             </summary>
             <param name="model"></param>
         </member>
-        <member name="M:ESocket.Common.Transporter.Disconnect">
+        <member name="M:ESocket.Common.Transporter.ExceptionDisconnect">
             <summary>
-            断开连接
+            异常中断
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Transporter.DisconnectInternal">
+            <summary>
+            中断连接
             </summary>
         </member>
         <member name="M:ESocket.Common.Transporter.ToString">

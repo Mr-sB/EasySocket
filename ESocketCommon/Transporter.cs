@@ -21,9 +21,17 @@ namespace ESocket.Common
         /// </summary>
         private Thread mClientThread;
         /// <summary>
+        /// 监听客户端消息的线程是否停止,所有线程中数据同步
+        /// </summary>
+        private volatile bool mIsClientThreadStop;
+        /// <summary>
         /// 检测心跳线程
         /// </summary>
         private Thread mListenHeartbeatThread;
+        /// <summary>
+        /// 检测心跳线程是否停止,所有线程中数据同步
+        /// </summary>
+        private volatile bool mIsListenHeartbeatThreadStop;
         /// <summary>
         /// 上一次接收心跳(收到消息)的时间
         /// </summary>
@@ -32,23 +40,33 @@ namespace ESocket.Common
         /// 上一次发送心跳(发送消息)的时间
         /// </summary>
         public DateTime LastSendHeartbeatTime { private set; get; }
+        
         /// <summary>
         /// 接收到消息
         /// </summary>
         /// <param name="model"></param>
         protected abstract void OnReceive(PackageModel model);
+        
         /// <summary>
-        /// 断开连接
+        /// 异常中断
         /// </summary>
-        public virtual void Disconnect()
+        protected virtual void ExceptionDisconnect()
+        {
+            DisconnectInternal();
+        }
+        
+        /// <summary>
+        /// 中断连接
+        /// </summary>
+        protected void DisconnectInternal()
         {
             //中断线程
-            mClientThread.Abort();
+            mIsClientThreadStop = true;
             mClientThread = null;
-            mListenHeartbeatThread.Abort();
+            mIsListenHeartbeatThreadStop = true;
             mListenHeartbeatThread = null;
             //关闭通信的套接字
-            mSocket.Close();
+            mSocket?.Close();
             mSocket = null;
         }
 
@@ -136,8 +154,7 @@ namespace ESocket.Common
         private void InitListenReceiveThread()
         {
             //与客户端通信的线程
-            mClientThread = new Thread(ListenReceiveThread);
-            mClientThread.IsBackground = true;
+            mClientThread = new Thread(ListenReceiveThread) {IsBackground = true};
             mClientThread.Start();
         }
 
@@ -146,8 +163,7 @@ namespace ESocket.Common
         /// </summary>
         private void InitListenHeartbeatThread()
         {
-            mListenHeartbeatThread = new Thread(ListenHeartbeatThread);
-            mListenHeartbeatThread.IsBackground = true;
+            mListenHeartbeatThread = new Thread(ListenHeartbeatThread) {IsBackground = true};
             mListenHeartbeatThread.Start();
         }
 
@@ -160,7 +176,7 @@ namespace ESocket.Common
             //创建内存缓冲区
             byte[] recBuffer = TransporterTool.GetReceiveBuffer();
             StringBuilder recStringBuilder = new StringBuilder();
-            while (true)
+            while (!mIsClientThreadStop)
             {
                 try
                 {
@@ -173,14 +189,12 @@ namespace ESocket.Common
                     catch (Exception e)
                     {
                         Console.WriteLine("中断连接\nMessage:{0}\nStackTrace:{1}", e.Message, e.StackTrace);
-                        Disconnect();
+                        ExceptionDisconnect();
                         return;
                     }
                     LastListenHeartbeatTime = TimeUtil.GetCurrentUtcTime();
                     //接收到的字符串
                     string recString = Encoding.UTF8.GetString(recBuffer, 0, length);
-                    //清空缓冲区
-                    Array.Clear(recBuffer, 0, length);
                     //拼接之后的结果
                     recString = recStringBuilder.Append(recString).ToString();
                     string[] packageJsons = recString.Split(ESocketConst.PackageSeparator, StringSplitOptions.RemoveEmptyEntries);
@@ -224,7 +238,7 @@ namespace ESocket.Common
         private void ListenHeartbeatThread()
         {
             if (mSocket == null) return;
-            while (true)
+            while (!mIsListenHeartbeatThreadStop)
             {
                 var lastListenHeartbeatTime = LastListenHeartbeatTime;
                 var interval = lastListenHeartbeatTime.GetDifferenceSeconds();
@@ -233,7 +247,7 @@ namespace ESocket.Common
                 {
                     Console.WriteLine("Heartbeat timeout...\nLastListenHeartbeatTime:{0}\tInterval:{1}", lastListenHeartbeatTime, interval);
                     //断开连接
-                    Disconnect();
+                    ExceptionDisconnect();
                     return;
                 }
                 //隔一秒检测一次

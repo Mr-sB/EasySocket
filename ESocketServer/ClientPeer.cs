@@ -21,16 +21,39 @@ namespace ESocket.Server
         }
 
         /// <summary>
-        /// 断开连接
+        /// 异常中断
         /// </summary>
-        public sealed override void Disconnect()
+        protected sealed override void ExceptionDisconnect()
+        {
+            DisconnectInternal();
+            base.ExceptionDisconnect();
+        }
+
+        /// <summary>
+        /// 主动断开连接
+        /// </summary>
+        public void Disconnect()
+        {
+            DisconnectInternal();
+            //发送关闭连接信息
+            SendConnect(ConnectCode.Disconnect);
+            base.DisconnectInternal();
+        }
+
+        /// <summary>
+        /// 被动断开连接
+        /// </summary>
+        private void BeDisconnected()
+        {
+            DisconnectInternal();
+            base.DisconnectInternal();
+        }
+
+        private new void DisconnectInternal()
         {
             Console.WriteLine("客户端{0}中断连接", ToString());
             OnDisconnect();
             ApplicationBase.Instance.OnDisconnect(this);
-            //发送关闭连接信息
-            SendConnect(ConnectCode.Disconnect);
-            base.Disconnect();
         }
 
         /// <summary>
@@ -45,7 +68,7 @@ namespace ESocket.Server
                     switch (connectCode)
                     {
                         case ConnectCode.Disconnect:
-                            Disconnect();
+                            BeDisconnected();
                             break;
                     }
                     break;
