@@ -2,9 +2,9 @@
 Easy Network communication. No need to care about socket, just use the API, and you can easily done Network communication.
 
 ## Features
-* Package socket conmunication, and you do not need to care about socket.
-* Provide server and client API, all you need is inherit the base class, and you can easily done network code.
-* Use LitJson to serialize/deserialize data inside, just put the data in send function, no need to serialize/deserialize again.
+* Packaging socket conmunication, and you do not need to care about socket.
+* Providing server and client API, all you need is inherit the base class, and you can easily done network code.
+* Using LitJson to serialize/deserialize data inside, just put the data in send function, no need to serialize/deserialize again.
 * Handling tcp sticky packets, and use heartbeat to keep connection.
 
 ## Usage
@@ -84,4 +84,4 @@ public static bool TryGetParameter<T>(this Dictionary<string, object> parameters
 ## Example
 * There is an example server application in `ESocket-OnPremise-Server-SDK/Example`, and an example client application in `ESocket-OnPremise-Server-SDK/Example/Client`.
 ## Thanks
-* Thanks for LitJSON/litjson to provide Json serialize/deserialize functions. https://github.com/LitJSON/litjson
+* Thanks for LitJSON/litjson providing Json serialize/deserialize functions. https://github.com/LitJSON/litjson
