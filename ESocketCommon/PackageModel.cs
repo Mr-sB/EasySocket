@@ -1,4 +1,4 @@
-﻿using LitJson;
+﻿using ESocket.Common.Tools;
 
 namespace ESocket.Common
 {
@@ -18,25 +18,25 @@ namespace ESocket.Common
         {
             PackageCode = packageCode;
             if (operation != null)
-                operationJson = JsonMapper.ToJson(operation);
+                operationJson = operation.ToJson();
         }
 
         public OperationConnect GetOperationConnect()
         {
             if (PackageCode != PackageCode.Connect) return null;
-            return JsonMapper.ToObject<OperationConnect>(operationJson);
+            return operationJson.ToObject<OperationConnect>();
         }
 
         public OperationRequest GetOperationRequest()
         {
             if (PackageCode != PackageCode.Request) return null;
-            return JsonMapper.ToObject<OperationRequest>(operationJson);
+            return operationJson.ToObject<OperationRequest>();
         }
 
         public OperationResponse GetOperationResponse()
         {
             if (PackageCode != PackageCode.Response) return null;
-            return JsonMapper.ToObject<OperationResponse>(operationJson);
+            return operationJson.ToObject<OperationResponse>();
         }
     }
 }

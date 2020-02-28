@@ -1,7 +1,5 @@
-﻿using LitJson;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ESocket.Common.Tools
 {
@@ -14,22 +12,24 @@ namespace ESocket.Common.Tools
         /// 获得一个新的参数列表
         /// </summary>
         public static Dictionary<string, object> NewParameters => new Dictionary<string, object>();
-
+        
         /// <summary>
         /// 往参数列表添加参数
         /// </summary>
         /// <param name="parameters">参数列表</param>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
+        /// <typeparam name="T">value类型</typeparam>
         /// <returns>参数列表</returns>
-        public static Dictionary<string, object> AddParameter(this Dictionary<string, object> parameters, string key, object value)
+        public static Dictionary<string, object> AddParameter<T>(this Dictionary<string, object> parameters, string key, T value)
         {
+            object objValue = value;
             if (parameters == null)
                 Console.WriteLine("parameters is null");
             else if (parameters.ContainsKey(key))
-                Console.WriteLine("parameters already contains parameter code:", key);
+                Console.WriteLine("parameters already contains parameter key:{0}", key);
             else
-                parameters.Add(key, value.GetType().NeedMap() ? JsonMapper.ToJson(value) : value);
+                parameters.Add(key, typeof(T).NeedMap() ? objValue.ToJson() : objValue);
             return parameters;
         }
 
@@ -51,32 +51,11 @@ namespace ESocket.Common.Tools
             }
             if (parameters.TryGetValue(key, out var value))
             {
-                parameter = typeof(T).NeedMap() ? JsonMapper.ToObject<T>((string)value) : (T)value;
+                parameter = typeof(T).NeedMap() ? ((string)value).ToObject<T>() : (T)value;
                 return true;
             }
-            Console.WriteLine("parameters does not contains parameter code:", key);
+            Console.WriteLine("parameters does not contains parameter key:{0}", key);
             return false;
-        }
-
-        /// <summary>
-        /// Parameter转字节数组
-        /// </summary>
-        /// <returns>字节数组</returns>
-        public static byte[] ToBuffer(this Dictionary<string, object> parameters)
-        {
-            if (parameters == null) return null;
-            return Encoding.UTF8.GetBytes(JsonMapper.ToJson(parameters));
-        }
-
-        /// <summary>
-        /// 给定数据类型的数据是否需要转换为json
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool NeedMap(this Type type)
-        {
-            if (type == null) return false;
-            return type.IsClass && type != typeof(string);
         }
     }
 }

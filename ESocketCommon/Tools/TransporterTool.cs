@@ -1,5 +1,4 @@
-﻿using LitJson;
-using System.Text;
+﻿using System.Text;
 
 namespace ESocket.Common.Tools
 {
@@ -24,7 +23,7 @@ namespace ESocket.Common.Tools
         public static byte[] ToPackageBuffer(this PackageModel model)
         {
             if (model == null) return null;
-            return Encoding.UTF8.GetBytes(JsonMapper.ToJson(model) + ESocketConst.SendPackageEndFlag);
+            return Encoding.UTF8.GetBytes(model.ToJson() + ESocketConst.SendPackageEndFlag);
         }
 
         /// <summary>
@@ -35,7 +34,7 @@ namespace ESocket.Common.Tools
         public static PackageModel ToPackageModel(this string json)
         {
             if (json == null || json.Length <= 0) return null;
-            return JsonMapper.ToObject<PackageModel>(json);
+            return json.ToObject<PackageModel>();
         }
 
         /// <summary>

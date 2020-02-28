@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ESocket.Common.Tools;
 
 namespace ESocket.Server
 {
@@ -31,7 +32,7 @@ namespace ESocket.Server
             {
                 using (StreamReader streamReader = new StreamReader(configRelativePath))
                 {
-                    return LitJson.JsonMapper.ToObject<Config>(streamReader.ReadToEnd());
+                    return streamReader.ReadToEnd().ToObject<Config>();
                 }
             }
             catch(Exception e)

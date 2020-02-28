@@ -52,13 +52,14 @@
             获得一个新的参数列表
             </summary>
         </member>
-        <member name="M:ESocket.Common.Tools.ESocketParameterTool.AddParameter(System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.Object)">
+        <member name="M:ESocket.Common.Tools.ESocketParameterTool.AddParameter``1(System.Collections.Generic.Dictionary{System.String,System.Object},System.String,``0)">
             <summary>
             往参数列表添加参数
             </summary>
             <param name="parameters">参数列表</param>
             <param name="key">key</param>
             <param name="value">value</param>
+            <typeparam name="T">value类型</typeparam>
             <returns>参数列表</returns>
         </member>
         <member name="M:ESocket.Common.Tools.ESocketParameterTool.TryGetParameter``1(System.Collections.Generic.Dictionary{System.String,System.Object},System.String,``0@)">
@@ -71,18 +72,32 @@
             <param name="parameter">参数</param>
             <returns>是否成功</returns>
         </member>
-        <member name="M:ESocket.Common.Tools.ESocketParameterTool.ToBuffer(System.Collections.Generic.Dictionary{System.String,System.Object})">
+        <member name="F:ESocket.Common.Tools.LitJsonUtil.NULL_JSON">
             <summary>
-            Parameter转字节数组
+            ToJson(null)时返回的值
             </summary>
-            <returns>字节数组</returns>
         </member>
-        <member name="M:ESocket.Common.Tools.ESocketParameterTool.NeedMap(System.Type)">
+        <member name="M:ESocket.Common.Tools.LitJsonUtil.NeedMap(System.Type)">
             <summary>
             给定数据类型的数据是否需要转换为json
             </summary>
             <param name="type"></param>
             <returns></returns>
+        </member>
+        <member name="M:ESocket.Common.Tools.LitJsonUtil.ToJson(System.Object)">
+            <summary>
+            对象转为json
+            </summary>
+            <param name="obj">对象</param>
+            <returns>json</returns>
+        </member>
+        <member name="M:ESocket.Common.Tools.LitJsonUtil.ToObject``1(System.String)">
+            <summary>
+            json转为对象
+            </summary>
+            <param name="json">json</param>
+            <typeparam name="T">对象类型</typeparam>
+            <returns>对象</returns>
         </member>
         <member name="T:ESocket.Common.Tools.TransporterTool">
             <summary>
