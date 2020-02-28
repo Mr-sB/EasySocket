@@ -57,7 +57,7 @@ namespace ESocket.Common.Tools
         /// <returns>时间</returns>
         public static DateTime ParseFromMilliseconds(this long milliseconds)
         {
-            return new DateTime(ZERO_TIME_TICKS).AddMilliseconds(milliseconds);
+            return mZeroTime.AddMilliseconds(milliseconds);
         }
     }
 }
