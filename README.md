@@ -51,6 +51,7 @@ public void SendResponse(int returnCode, Dictionary<string, object> parameters);
 }
 ```
 `ApplicationConfig` tells where your server dll is.
+`ServerIP` is server private net ip address.
 * When your code is done, generate your project and put your server dll in `ESocket-OnPremise-Server-SDK/%BaseDirectory` path.
 * Copy `ESocketConfig.json` to `ESocket-OnPremise-Server-SDK/bin_Launcher`, then launch `ESocket-OnPremise-Server-SDK/bin_Launcher/ESocketServerLauncher.exe`, it will startup your server application.
 ### Client
@@ -65,7 +66,7 @@ void OnOperationResponse(OperationResponse response);
 * Create a `ESocketPeer` to connect to server and listen server's messages.
 ```c#
 var peer = new ESocketPeer(%IPeerListener);
-//Connect
+//Connect  server public net ip address
 peer.Connect("127.0.0.1", 5000);
 ```
 * You can use these functions to send messages to server.
