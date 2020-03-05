@@ -199,6 +199,8 @@ namespace ESocket.Common
                     }
                     catch (Exception e)
                     {
+                        //线程中断，直接返回
+                        if(!token.IsLooping) return;
                         Console.WriteLine("中断连接\nMessage:{0}\nStackTrace:{1}", e.Message, e.StackTrace);
                         ExceptionDisconnect();
                         return;
