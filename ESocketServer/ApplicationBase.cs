@@ -103,7 +103,6 @@ namespace ESocket.Server
                     return;
                 }
 
-                if (connectSocket == null) continue;
                 //获取客户端ip地址和端口号
                 EndPoint clientEndPoint = connectSocket.RemoteEndPoint;
                 if (clientEndPoint == null) continue;

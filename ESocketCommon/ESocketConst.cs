@@ -9,11 +9,11 @@
         /// <summary>
         /// 发送心跳包间隔/s
         /// </summary>
-        public static int SendHeartbeatInterval = 30;
+        public static int SendHeartbeatInterval = 10;
         /// <summary>
         /// 心跳包超时时间/s，超过时间就判断为断开连接
         /// </summary>
-        public static int HeartbeatTimeout = 60;
+        public static int HeartbeatTimeout = 15;
         /// <summary>
         /// 消息结尾标记。转义字符，json里不包含，不产生冲突
         /// 用于解决粘包问题

@@ -13,19 +13,20 @@ namespace ESocket.Client
         /// <summary>
         /// 发送心跳的线程
         /// </summary>
-        private Thread mSendHeartbeatThread;
-        /// <summary>
-        /// 发送心跳的线程是否停止,所有线程中数据同步
-        /// </summary>
-        private volatile bool mIsSendHeartbeatThreadStop;
+        private LoopThread mSendHeartbeatThread;
         /// <summary>
         /// 连接状态
         /// </summary>
         public ConnectCode ConnectCode { private set; get; } = ConnectCode.Disconnect;
 
-        public ESocketPeer(IPeerListener listener) : base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+        public ESocketPeer(IPeerListener listener) : base(CreateSocket())
         {
             mListener = listener;
+        }
+
+        private static Socket CreateSocket()
+        {
+            return new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
         /// <summary>
@@ -35,6 +36,8 @@ namespace ESocket.Client
         /// <param name="port">端口号</param>
         public void Connect(string serverIP, int port)
         {
+            if (mSocket == null)
+                mSocket = CreateSocket();
             mSocket.Connect(IPAddress.Parse(serverIP), port);
             Init();
         }
@@ -42,10 +45,10 @@ namespace ESocket.Client
         /// <summary>
         /// 异常中断
         /// </summary>
-        protected override void ExceptionDisconnect()
+        protected sealed override void ExceptionDisconnect()
         {
-            DisconnectInternal();
             base.ExceptionDisconnect();
+            DisconnectInternal();
         }
 
         /// <summary>
@@ -56,8 +59,8 @@ namespace ESocket.Client
             if (mSocket == null || ConnectCode == ConnectCode.Disconnect) return;
             //发送关闭连接信息
             SendConnect(ConnectCode.Disconnect);
-            DisconnectInternal();
             base.DisconnectInternal();
+            DisconnectInternal();
         }
 
         /// <summary>
@@ -65,15 +68,19 @@ namespace ESocket.Client
         /// </summary>
         private void BeDisconnected()
         {
-            DisconnectInternal();
             base.DisconnectInternal();
+            DisconnectInternal();
         }
 
+        /// <summary>
+        /// 在base.DisconnectInternal()之后执行
+        /// </summary>
         private new void DisconnectInternal()
         {
-            mListener?.OnConnectStateChanged(ConnectCode.Disconnect);
-            mIsSendHeartbeatThreadStop = true;
+            mSendHeartbeatThread?.Stop();
             mSendHeartbeatThread = null;
+            ConnectCode = ConnectCode.Disconnect;
+            mListener?.OnConnectStateChanged(ConnectCode.Disconnect);
         }
 
         /// <summary>
@@ -81,17 +88,18 @@ namespace ESocket.Client
         /// </summary>
         private void InitSendHeartbeatThread()
         {
-            mSendHeartbeatThread = new Thread(SendHeartbeatThread) {IsBackground = true};
+            mSendHeartbeatThread = new LoopThread(SendHeartbeatThread) {IsBackground = true};
             mSendHeartbeatThread.Start();
         }
 
         /// <summary>
         /// 发送心跳,保持正常连接
         /// </summary>
-        private void SendHeartbeatThread()
+        private void SendHeartbeatThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
-            while (!mIsSendHeartbeatThreadStop)
+            var timeout = TimeSpan.FromSeconds(1);
+            while (token.IsLooping)
             {
                 //发送心跳
                 var interval = LastSendHeartbeatTime.GetDifferenceSeconds();
@@ -100,14 +108,14 @@ namespace ESocket.Client
                     SendHeartbeat();
                 }
                 //隔一秒检测一次
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                Thread.Sleep(timeout);
             }
         }
 
         /// <summary>
         /// 监听消息
         /// </summary>
-        protected override void OnReceive(PackageModel model)
+        protected sealed override void OnReceive(PackageModel model)
         {
             if (mListener == null) return;
 

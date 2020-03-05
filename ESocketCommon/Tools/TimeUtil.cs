@@ -6,6 +6,19 @@ namespace ESocket.Common.Tools
     {
         private static readonly DateTime mZeroTime = new DateTime(1970, 1, 1);
         public static readonly long ZERO_TIME_TICKS = mZeroTime.Ticks;
+        private static int? mTimeDifferenceHour;
+        /// <summary>
+        /// 本地时区时间与Utc时间的时差(小时)
+        /// </summary>
+        public static int TimeDifferenceHour
+        {
+            get
+            {
+                if (!mTimeDifferenceHour.HasValue)
+                    mTimeDifferenceHour = int.Parse(DateTime.Now.ToString("%z"));
+                return mTimeDifferenceHour.Value;
+            }
+        }
         
         /// <summary>
         /// 获取当前Utc时间
@@ -14,6 +27,16 @@ namespace ESocket.Common.Tools
         public static DateTime GetCurrentUtcTime()
         {
             return DateTime.UtcNow;
+        }
+        
+        /// <summary>
+        /// 将Utc时间转换为本地时区的时间
+        /// </summary>
+        /// <param name="utcTime">utc时间</param>
+        /// <returns>本地时区的时间</returns>
+        public static DateTime UtcToLocalTime(this DateTime utcTime)
+        {
+            return utcTime.AddHours(TimeDifferenceHour);
         }
 
         /// <summary>
@@ -37,7 +60,7 @@ namespace ESocket.Common.Tools
         /// <returns>时间差(秒)</returns>
         public static long GetDifferenceSeconds(this DateTime time, bool signed = false)
         {
-            return GetCurrentUtcTime().GetDifferenceSeconds(time);
+            return GetCurrentUtcTime().GetDifferenceSeconds(time, signed);
         }
 
         /// <summary>

@@ -99,6 +99,26 @@
             <typeparam name="T">对象类型</typeparam>
             <returns>对象</returns>
         </member>
+        <member name="F:ESocket.Common.Tools.LoopThread.Token.mIsLooping">
+            <summary>
+            是否在循环运行.所有线程中数据同步
+            </summary>
+        </member>
+        <member name="F:ESocket.Common.Tools.LoopThread.mLoopToken">
+            <summary>
+            所有线程中数据同步
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Tools.LoopThread.#ctor(System.Action{ESocket.Common.Tools.LoopThread.Token})">
+            <summary>
+            无参数线程
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Tools.LoopThread.#ctor(System.Action{ESocket.Common.Tools.LoopThread.Token,System.Object})">
+            <summary>
+            带参数线程
+            </summary>
+        </member>
         <member name="T:ESocket.Common.Tools.TransporterTool">
             <summary>
             工具类
@@ -139,11 +159,23 @@
             <param name="count">长度</param>
             <returns>字符串</returns>
         </member>
+        <member name="P:ESocket.Common.Tools.TimeUtil.TimeDifferenceHour">
+            <summary>
+            本地时区时间与Utc时间的时差(小时)
+            </summary>
+        </member>
         <member name="M:ESocket.Common.Tools.TimeUtil.GetCurrentUtcTime">
             <summary>
             获取当前Utc时间
             </summary>
             <returns>Utc时间</returns>
+        </member>
+        <member name="M:ESocket.Common.Tools.TimeUtil.UtcToLocalTime(System.DateTime)">
+            <summary>
+            将Utc时间转换为本地时区的时间
+            </summary>
+            <param name="utcTime">utc时间</param>
+            <returns>本地时区的时间</returns>
         </member>
         <member name="M:ESocket.Common.Tools.TimeUtil.GetDifferenceSeconds(System.DateTime,System.DateTime,System.Boolean)">
             <summary>
@@ -242,19 +274,9 @@
             监听客户端消息的线程
             </summary>
         </member>
-        <member name="F:ESocket.Common.Transporter.mIsClientThreadStop">
-            <summary>
-            监听客户端消息的线程是否停止,所有线程中数据同步
-            </summary>
-        </member>
         <member name="F:ESocket.Common.Transporter.mListenHeartbeatThread">
             <summary>
             检测心跳线程
-            </summary>
-        </member>
-        <member name="F:ESocket.Common.Transporter.mIsListenHeartbeatThreadStop">
-            <summary>
-            检测心跳线程是否停止,所有线程中数据同步
             </summary>
         </member>
         <member name="P:ESocket.Common.Transporter.LastListenHeartbeatTime">
@@ -328,12 +350,12 @@
             初始化检测心跳线程
             </summary>
         </member>
-        <member name="M:ESocket.Common.Transporter.ListenReceiveThread">
+        <member name="M:ESocket.Common.Transporter.ListenReceiveThread(ESocket.Common.Tools.LoopThread.Token)">
             <summary>
             监听消息
             </summary>
         </member>
-        <member name="M:ESocket.Common.Transporter.ListenHeartbeatThread">
+        <member name="M:ESocket.Common.Transporter.ListenHeartbeatThread(ESocket.Common.Tools.LoopThread.Token)">
             <summary>
             监听心跳,是否正常连接
             </summary>

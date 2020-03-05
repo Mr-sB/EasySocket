@@ -19,19 +19,11 @@ namespace ESocket.Common
         /// <summary>
         /// 监听客户端消息的线程
         /// </summary>
-        private Thread mClientThread;
-        /// <summary>
-        /// 监听客户端消息的线程是否停止,所有线程中数据同步
-        /// </summary>
-        private volatile bool mIsClientThreadStop;
+        private LoopThread mClientThread;
         /// <summary>
         /// 检测心跳线程
         /// </summary>
-        private Thread mListenHeartbeatThread;
-        /// <summary>
-        /// 检测心跳线程是否停止,所有线程中数据同步
-        /// </summary>
-        private volatile bool mIsListenHeartbeatThreadStop;
+        private LoopThread mListenHeartbeatThread;
         /// <summary>
         /// 上一次接收心跳(收到消息)的时间
         /// </summary>
@@ -61,12 +53,23 @@ namespace ESocket.Common
         protected void DisconnectInternal()
         {
             //中断线程
-            mIsClientThreadStop = true;
+            mClientThread?.Stop();
             mClientThread = null;
-            mIsListenHeartbeatThreadStop = true;
+            mListenHeartbeatThread?.Stop();
             mListenHeartbeatThread = null;
             //关闭通信的套接字
-            mSocket?.Close();
+            try
+            {
+                mSocket?.Shutdown(SocketShutdown.Both);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                mSocket?.Close();
+            }
             mSocket = null;
         }
 
@@ -77,7 +80,15 @@ namespace ESocket.Common
         public sealed override string ToString()
         {
             if (mSocket == null) return "null";
-            return mSocket.RemoteEndPoint.ToString();
+            try
+            {
+                return mSocket.RemoteEndPoint.ToString();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return "null";
+            }
         }
 
         public Transporter(Socket socket)
@@ -154,7 +165,7 @@ namespace ESocket.Common
         private void InitListenReceiveThread()
         {
             //与客户端通信的线程
-            mClientThread = new Thread(ListenReceiveThread) {IsBackground = true};
+            mClientThread = new LoopThread(ListenReceiveThread) {IsBackground = true};
             mClientThread.Start();
         }
 
@@ -163,20 +174,20 @@ namespace ESocket.Common
         /// </summary>
         private void InitListenHeartbeatThread()
         {
-            mListenHeartbeatThread = new Thread(ListenHeartbeatThread) {IsBackground = true};
+            mListenHeartbeatThread = new LoopThread(ListenHeartbeatThread) {IsBackground = true};
             mListenHeartbeatThread.Start();
         }
 
         /// <summary>
         /// 监听消息
         /// </summary>
-        private void ListenReceiveThread()
+        private void ListenReceiveThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
             //创建内存缓冲区
             byte[] recBuffer = TransporterTool.GetReceiveBuffer();
             StringBuilder recStringBuilder = new StringBuilder();
-            while (!mIsClientThreadStop)
+            while (token.IsLooping)
             {
                 try
                 {
@@ -235,10 +246,11 @@ namespace ESocket.Common
         /// <summary>
         /// 监听心跳,是否正常连接
         /// </summary>
-        private void ListenHeartbeatThread()
+        private void ListenHeartbeatThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
-            while (!mIsListenHeartbeatThreadStop)
+            var timeout = TimeSpan.FromSeconds(1);
+            while (token.IsLooping)
             {
                 var lastListenHeartbeatTime = LastListenHeartbeatTime;
                 var interval = lastListenHeartbeatTime.GetDifferenceSeconds();
@@ -251,7 +263,7 @@ namespace ESocket.Common
                     return;
                 }
                 //隔一秒检测一次
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                Thread.Sleep(timeout);
             }
         }
     }

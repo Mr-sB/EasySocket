@@ -50,6 +50,7 @@
     <Compile Include="PackageModel.cs" />
     <Compile Include="Tools\ESocketParameterTool.cs" />
     <Compile Include="Tools\LitJsonUtil.cs" />
+    <Compile Include="Tools\LoopThread.cs" />
     <Compile Include="Tools\TransporterTool.cs" />
     <Compile Include="Operations\OperationBase.cs" />
     <Compile Include="Operations\OperationConnect.cs" />

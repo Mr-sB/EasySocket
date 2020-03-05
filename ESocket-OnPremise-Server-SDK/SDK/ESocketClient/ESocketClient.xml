@@ -9,11 +9,6 @@
             发送心跳的线程
             </summary>
         </member>
-        <member name="F:ESocket.Client.ESocketPeer.mIsSendHeartbeatThreadStop">
-            <summary>
-            发送心跳的线程是否停止,所有线程中数据同步
-            </summary>
-        </member>
         <member name="P:ESocket.Client.ESocketPeer.ConnectCode">
             <summary>
             连接状态
@@ -41,12 +36,17 @@
             被动断开连接
             </summary>
         </member>
+        <member name="M:ESocket.Client.ESocketPeer.DisconnectInternal">
+            <summary>
+            在base.DisconnectInternal()之后执行
+            </summary>
+        </member>
         <member name="M:ESocket.Client.ESocketPeer.InitSendHeartbeatThread">
             <summary>
             初始化发送心跳线程
             </summary>
         </member>
-        <member name="M:ESocket.Client.ESocketPeer.SendHeartbeatThread">
+        <member name="M:ESocket.Client.ESocketPeer.SendHeartbeatThread(ESocket.Common.Tools.LoopThread.Token)">
             <summary>
             发送心跳,保持正常连接
             </summary>
