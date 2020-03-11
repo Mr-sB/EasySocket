@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ESocketConst.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Operations\IOperation.cs" />
     <Compile Include="PackageModel.cs" />
     <Compile Include="Tools\ESocketParameterTool.cs" />

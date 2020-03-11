@@ -34,7 +34,7 @@ namespace ESocket.Common.Tools
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError(e);
                 return string.Empty;
             }
         }
@@ -54,7 +54,7 @@ namespace ESocket.Common.Tools
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError(e);
                 return default(T);
             }
         }

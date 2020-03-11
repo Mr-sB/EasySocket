@@ -64,7 +64,7 @@ namespace ESocket.Common
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError(e);
             }
             finally
             {
@@ -86,7 +86,7 @@ namespace ESocket.Common
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError(e);
                 return "null";
             }
         }
@@ -155,7 +155,7 @@ namespace ESocket.Common
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError(e);
             }
         }
 
@@ -201,7 +201,7 @@ namespace ESocket.Common
                     {
                         //线程中断，直接返回
                         if(!token.IsLooping) return;
-                        Console.WriteLine("中断连接\nMessage:{0}\nStackTrace:{1}", e.Message, e.StackTrace);
+                        Logger.LogError("中断连接\nMessage:{0}\nStackTrace:{1}", e.Message, e.StackTrace);
                         ExceptionDisconnect();
                         return;
                     }
@@ -234,13 +234,13 @@ namespace ESocket.Common
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e);
+                            Logger.LogError(e);
                         }
                     }
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine(e);
+                    Logger.LogError(e);
                 }
             }
         }
@@ -259,7 +259,7 @@ namespace ESocket.Common
                 //心跳超时
                 if (interval >= ESocketConst.HeartbeatTimeout)
                 {
-                    Console.WriteLine("Heartbeat timeout...\nLastListenHeartbeatTime:{0}\tInterval:{1}", lastListenHeartbeatTime, interval);
+                    Logger.LogError("Heartbeat timeout...\nLastListenHeartbeatTime:{0}\tInterval:{1}", lastListenHeartbeatTime, interval);
                     //断开连接
                     ExceptionDisconnect();
                     return;

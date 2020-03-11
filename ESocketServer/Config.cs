@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ESocket.Common;
 using ESocket.Common.Tools;
 
 namespace ESocket.Server
@@ -25,7 +26,7 @@ namespace ESocket.Server
             string configRelativePath = GetConfigRelativePath();
             if (!File.Exists(configRelativePath))
             {
-                Console.WriteLine("{0} does not exit!", configRelativePath);
+                Logger.LogError("{0} does not exit!", configRelativePath);
                 return null;
             }
             try
@@ -37,7 +38,7 @@ namespace ESocket.Server
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogError(e);
                 return null;
             }
         }

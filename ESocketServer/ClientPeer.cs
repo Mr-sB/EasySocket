@@ -51,7 +51,7 @@ namespace ESocket.Server
 
         private new void DisconnectInternal()
         {
-            Console.WriteLine("客户端{0}中断连接", ToString());
+            Logger.LogError("客户端{0}中断连接", ToString());
             OnDisconnect();
             ApplicationBase.Instance.OnDisconnect(this);
         }

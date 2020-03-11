@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using ESocket.Common;
 
 namespace ESocket.Server
 {
@@ -99,7 +100,7 @@ namespace ESocket.Server
                 catch (Exception e)
                 {
                     //套接字监听异常
-                    Console.WriteLine(e.Message);
+                    Logger.LogError(e.Message);
                     return;
                 }
 

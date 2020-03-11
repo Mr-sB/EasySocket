@@ -32,6 +32,56 @@
             包分隔符
             </summary>
         </member>
+        <member name="F:ESocket.Common.Logger.LogEnabled">
+            <summary>
+            To runtime toggle Logger logging [ON/OFF].
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.SetLogger(System.Action{System.String},System.Action{System.String})">
+            <summary>
+            Set log action
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.Log(System.String)">
+            <summary>
+            Log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.Log(System.String,System.Object)">
+            <summary>
+            Log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.Log(System.String,System.Object[])">
+            <summary>
+            Log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.Log(System.Object)">
+            <summary>
+            Log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.LogError(System.String)">
+            <summary>
+            Error log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.LogError(System.String,System.Object)">
+            <summary>
+            Error log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.LogError(System.String,System.Object[])">
+            <summary>
+            Error log
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Logger.LogError(System.Object)">
+            <summary>
+            Error log
+            </summary>
+        </member>
         <member name="F:ESocket.Common.PackageModel.PackageCode">
             <summary>
             包码

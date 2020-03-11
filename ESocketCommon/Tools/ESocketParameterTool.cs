@@ -25,9 +25,9 @@ namespace ESocket.Common.Tools
         {
             object objValue = value;
             if (parameters == null)
-                Console.WriteLine("parameters is null");
+                Logger.LogError("parameters is null");
             else if (parameters.ContainsKey(key))
-                Console.WriteLine("parameters already contains parameter key:{0}", key);
+                Logger.LogError("parameters already contains parameter key:{0}", key);
             else
                 parameters.Add(key, typeof(T).NeedMap() ? objValue.ToJson() : objValue);
             return parameters;
@@ -46,7 +46,7 @@ namespace ESocket.Common.Tools
             parameter = default(T);
             if (parameters == null)
             {
-                Console.WriteLine("parameters is null");
+                Logger.LogError("parameters is null");
                 return false;
             }
             if (parameters.TryGetValue(key, out var value))
@@ -54,7 +54,7 @@ namespace ESocket.Common.Tools
                 parameter = typeof(T).NeedMap() ? ((string)value).ToObject<T>() : (T)value;
                 return true;
             }
-            Console.WriteLine("parameters does not contains parameter key:{0}", key);
+            Logger.LogError("parameters does not contains parameter key:{0}", key);
             return false;
         }
     }
