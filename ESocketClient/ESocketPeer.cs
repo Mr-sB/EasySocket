@@ -98,7 +98,6 @@ namespace ESocket.Client
         private void SendHeartbeatThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
-            var timeout = TimeSpan.FromSeconds(1);
             while (token.IsLooping)
             {
                 //发送心跳
@@ -108,7 +107,7 @@ namespace ESocket.Client
                     SendHeartbeat();
                 }
                 //隔一秒检测一次
-                Thread.Sleep(timeout);
+                Thread.Sleep(1000);
             }
         }
 

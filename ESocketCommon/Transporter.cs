@@ -251,7 +251,6 @@ namespace ESocket.Common
         private void ListenHeartbeatThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
-            var timeout = TimeSpan.FromSeconds(1);
             while (token.IsLooping)
             {
                 var lastListenHeartbeatTime = LastListenHeartbeatTime;
@@ -265,7 +264,7 @@ namespace ESocket.Common
                     return;
                 }
                 //隔一秒检测一次
-                Thread.Sleep(timeout);
+                Thread.Sleep(1000);
             }
         }
     }
