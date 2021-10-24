@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ESocket.Common.Tools
 {
@@ -23,7 +25,12 @@ namespace ESocket.Common.Tools
         public static byte[] ToPackageBuffer(this PackageModel model)
         {
             if (model == null) return null;
-            return Encoding.UTF8.GetBytes(model.ToJson() + ESocketConst.SendPackageEndFlag);
+            var packageData = Encoding.UTF8.GetBytes(model.ToJson());
+            byte[] allData = new byte[packageData.Length + ESocketConst.PackageLengthByteArrayLength];
+            byte[] lengthArray = BitConverter.GetBytes(allData.Length);
+            Array.Copy(lengthArray, allData, ESocketConst.PackageLengthByteArrayLength);
+            packageData.CopyTo(allData, ESocketConst.PackageLengthByteArrayLength);
+            return allData;
         }
 
         /// <summary>
@@ -37,6 +44,32 @@ namespace ESocket.Common.Tools
             return json.ToObject<PackageModel>();
         }
 
+        //将byte转换成int类型
+        public static int ConvertByteToInt(IList<byte> bytes, int startIndex = 0, int length = -1)
+        {
+            int result = 0;
+            if (startIndex < 0)
+                startIndex = 0;
+            else if (startIndex >= bytes.Count)
+                startIndex = bytes.Count - 1;
+            
+            int endIndex;
+            if (length < 0)
+                endIndex = bytes.Count;
+            else
+            {
+                endIndex = startIndex + length;
+                if (endIndex > bytes.Count)
+                    endIndex = bytes.Count;
+            }
+            for (int i = startIndex; i < endIndex; ++i)
+            {
+                byte ch_int = bytes[i];
+                result += ch_int << (8 * i);
+            }
+            return result;
+        }
+        
         /// <summary>
         /// 字节数组转为字符串
         /// </summary>

@@ -25,6 +25,19 @@ namespace ESocket.Common
         /// </summary>
         private LoopThread mListenHeartbeatThread;
         /// <summary>
+        /// 内存缓冲区
+        /// </summary>
+        private readonly byte[] mRecBuffer = TransporterTool.GetReceiveBuffer();
+        /// <summary>
+        /// 接收到的字节
+        /// </summary>
+        private readonly List<byte> mRecDataList = new List<byte>();
+        /// <summary>
+        /// 当前需要接收的数据包的长度
+        /// </summary>
+        private int mCurDataLength;
+        
+        /// <summary>
         /// 上一次接收心跳(收到消息)的时间
         /// </summary>
         public DateTime LastListenHeartbeatTime { private set; get; }
@@ -71,6 +84,8 @@ namespace ESocket.Common
                 mSocket?.Close();
             }
             mSocket = null;
+            mRecDataList.Clear();
+            mCurDataLength = 0;
         }
 
         /// <summary>
@@ -184,9 +199,6 @@ namespace ESocket.Common
         private void ListenReceiveThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
-            //创建内存缓冲区
-            byte[] recBuffer = TransporterTool.GetReceiveBuffer();
-            StringBuilder recStringBuilder = new StringBuilder();
             while (token.IsLooping)
             {
                 try
@@ -195,7 +207,7 @@ namespace ESocket.Common
                     try
                     {
                         //接收到的信息放入缓冲区，并获得字节数组长度
-                        length = mSocket.Receive(recBuffer);
+                        length = mSocket.Receive(mRecBuffer);
                     }
                     catch (Exception e)
                     {
@@ -206,35 +218,23 @@ namespace ESocket.Common
                         return;
                     }
                     LastListenHeartbeatTime = TimeUtil.GetCurrentUtcTime();
-                    //接收到的字符串
-                    string recString = Encoding.UTF8.GetString(recBuffer, 0, length);
-                    //拼接之后的结果
-                    recString = recStringBuilder.Append(recString).ToString();
-                    string[] packageJsons = recString.Split(ESocketConst.PackageSeparator, StringSplitOptions.RemoveEmptyEntries);
-                    if (packageJsons.Length > 0)
+                    for (int i = 0; i < length; i++)
                     {
-                        //没有完整包
-                        if (packageJsons.Length == 1 && !recString.EndsWith(ESocketConst.SendPackageEndFlag)) continue;
-                        recStringBuilder.Clear();
-                        try
+                        mRecDataList.Add(mRecBuffer[i]);
+                        //读取当前数据包总长度
+                        if (mRecDataList.Count == ESocketConst.PackageLengthByteArrayLength)
+                            mCurDataLength = TransporterTool.ConvertByteToInt(mRecDataList);
+                        //当前数据包接收完毕
+                        else if (mCurDataLength > 0 && mRecDataList.Count == mCurDataLength)
                         {
-                            for (int i = 0, maxIndex = packageJsons.Length - 1; i <= maxIndex; i++)
-                            {
-                                var json = packageJsons[i];
-                                //最后一个包不完整
-                                if (maxIndex > 0 && i == maxIndex && !recString.EndsWith(ESocketConst.SendPackageEndFlag))
-                                {
-                                    recStringBuilder.Append(json);
-                                    break;
-                                }
-                                //将字节数组转为Model
-                                PackageModel model = json.ToPackageModel();
-                                OnReceive(model);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogError(e);
+                            //接收到的完整数据json
+                            string json = Encoding.UTF8.GetString(mRecDataList.ToArray(), ESocketConst.PackageLengthByteArrayLength,
+                                mCurDataLength - ESocketConst.PackageLengthByteArrayLength);
+                            mRecDataList.Clear();
+                            mCurDataLength = 0;
+                            //将字节数组转为Model
+                            PackageModel model = json.ToPackageModel();
+                            OnReceive(model);
                         }
                     }
                 }

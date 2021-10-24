@@ -15,15 +15,11 @@
         /// </summary>
         public static int HeartbeatTimeout = 15;
         /// <summary>
-        /// 消息结尾标记。转义字符，json里不包含，不产生冲突
+        /// 表示消息长度的字节数组长度
         /// 用于解决粘包问题
         /// 对方发来了1M的数据量过来，但是，本地的buffer只有1024字节，那就代表socket需要重复很多次才能真正收完这逻辑上的一整个消息。
         /// 对方发来了5条2个字符的消息，本地的buffer（大小1024字节）会将这5条消息全部收入囊下...
         /// </summary>
-        public const string SendPackageEndFlag = "\r\n";
-        /// <summary>
-        /// 包分隔符
-        /// </summary>
-        public static readonly string[] PackageSeparator = new[] { SendPackageEndFlag };
+        public const byte PackageLengthByteArrayLength = 4;
     }
 }
