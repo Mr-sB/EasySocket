@@ -314,9 +314,14 @@
             通信套接字
             </summary>
         </member>
-        <member name="F:ESocket.Common.Transporter.mClientThread">
+        <member name="F:ESocket.Common.Transporter.mReceiveThread">
             <summary>
-            监听客户端消息的线程
+            监听消息的线程
+            </summary>
+        </member>
+        <member name="F:ESocket.Common.Transporter.mSendThread">
+            <summary>
+            发送消息的线程
             </summary>
         </member>
         <member name="F:ESocket.Common.Transporter.mListenHeartbeatThread">
@@ -326,7 +331,7 @@
         </member>
         <member name="F:ESocket.Common.Transporter.mRecBuffer">
             <summary>
-            内存缓冲区
+            接收缓冲区
             </summary>
         </member>
         <member name="F:ESocket.Common.Transporter.mRecDataList">
@@ -337,6 +342,16 @@
         <member name="F:ESocket.Common.Transporter.mCurDataLength">
             <summary>
             当前需要接收的数据包的长度
+            </summary>
+        </member>
+        <member name="F:ESocket.Common.Transporter.mWaitSendDataQueue">
+            <summary>
+            发送消息缓冲区
+            </summary>
+        </member>
+        <member name="F:ESocket.Common.Transporter.mSendWaiter">
+            <summary>
+            发送等待器
             </summary>
         </member>
         <member name="P:ESocket.Common.Transporter.LastListenHeartbeatTime">
@@ -395,14 +410,24 @@
             </summary>
             <param name="connectCode">连接状态</param>
         </member>
-        <member name="M:ESocket.Common.Transporter.Send(ESocket.Common.PackageCode,ESocket.Common.IOperation)">
+        <member name="M:ESocket.Common.Transporter.WaitSend(ESocket.Common.PackageCode,ESocket.Common.IOperation)">
+            <summary>
+            加入发送缓冲区
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Transporter.Send(System.Byte[])">
             <summary>
             发送消息
             </summary>
         </member>
-        <member name="M:ESocket.Common.Transporter.InitListenReceiveThread">
+        <member name="M:ESocket.Common.Transporter.InitReceiveThread">
             <summary>
-            初始化监听通信的线程
+            初始化接收消息的线程
+            </summary>
+        </member>
+        <member name="M:ESocket.Common.Transporter.InitSendThread">
+            <summary>
+            初始化发送消息的线程
             </summary>
         </member>
         <member name="M:ESocket.Common.Transporter.InitListenHeartbeatThread">
@@ -410,7 +435,7 @@
             初始化检测心跳线程
             </summary>
         </member>
-        <member name="M:ESocket.Common.Transporter.ListenReceiveThread(ESocket.Common.Tools.LoopThread.Token)">
+        <member name="M:ESocket.Common.Transporter.ReceiveThread(ESocket.Common.Tools.LoopThread.Token)">
             <summary>
             监听消息
             </summary>

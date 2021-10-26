@@ -17,15 +17,19 @@ namespace ESocket.Common
         /// </summary>
         protected Socket mSocket;
         /// <summary>
-        /// 监听客户端消息的线程
+        /// 监听消息的线程
         /// </summary>
-        private LoopThread mClientThread;
+        private LoopThread mReceiveThread;
+        /// <summary>
+        /// 发送消息的线程
+        /// </summary>
+        private LoopThread mSendThread;
         /// <summary>
         /// 检测心跳线程
         /// </summary>
         private LoopThread mListenHeartbeatThread;
         /// <summary>
-        /// 内存缓冲区
+        /// 接收缓冲区
         /// </summary>
         private readonly byte[] mRecBuffer = TransporterTool.GetReceiveBuffer();
         /// <summary>
@@ -36,6 +40,14 @@ namespace ESocket.Common
         /// 当前需要接收的数据包的长度
         /// </summary>
         private int mCurDataLength;
+        /// <summary>
+        /// 发送消息缓冲区
+        /// </summary>
+        private readonly Queue<byte[]> mWaitSendDataQueue = new Queue<byte[]>();
+        /// <summary>
+        /// 发送等待器
+        /// </summary>
+        private readonly EventWaitHandle mSendWaiter = new AutoResetEvent(false);
         
         /// <summary>
         /// 上一次接收心跳(收到消息)的时间
@@ -66,8 +78,8 @@ namespace ESocket.Common
         protected void DisconnectInternal()
         {
             //中断线程
-            mClientThread?.Stop();
-            mClientThread = null;
+            mReceiveThread?.Stop();
+            mReceiveThread = null;
             mListenHeartbeatThread?.Stop();
             mListenHeartbeatThread = null;
             //关闭通信的套接字
@@ -86,6 +98,8 @@ namespace ESocket.Common
             mSocket = null;
             mRecDataList.Clear();
             mCurDataLength = 0;
+            mWaitSendDataQueue.Clear();
+            mSendWaiter.Close();
         }
 
         /// <summary>
@@ -115,8 +129,11 @@ namespace ESocket.Common
         {
             LastListenHeartbeatTime = TimeUtil.GetCurrentUtcTime();
             LastSendHeartbeatTime = TimeUtil.GetCurrentUtcTime();
-            //初始化监听客户端消息线程
-            InitListenReceiveThread();
+            mSendWaiter.Reset();
+            //初始化接收消息线程
+            InitReceiveThread();
+            //初始化发送消息线程
+            InitSendThread();
             //初始化心跳检测线程
             InitListenHeartbeatThread();
         }
@@ -127,7 +144,7 @@ namespace ESocket.Common
         /// <param name="parameters">参数列表</param>
         public void SendRequest(Dictionary<string, object> parameters)
         {
-            Send(PackageCode.Request, new OperationRequest(parameters));
+            WaitSend(PackageCode.Request, new OperationRequest(parameters));
         }
 
         /// <summary>
@@ -137,7 +154,7 @@ namespace ESocket.Common
         /// <param name="parameters">参数列表</param>
         public void SendResponse(int returnCode, Dictionary<string, object> parameters)
         {
-            Send(PackageCode.Response, new OperationResponse(returnCode, parameters));
+            WaitSend(PackageCode.Response, new OperationResponse(returnCode, parameters));
         }
 
         /// <summary>
@@ -145,7 +162,7 @@ namespace ESocket.Common
         /// </summary>
         protected void SendHeartbeat()
         {
-            Send(PackageCode.Heartbeat, null);
+            WaitSend(PackageCode.Heartbeat, null);
         }
 
         /// <summary>
@@ -154,19 +171,35 @@ namespace ESocket.Common
         /// <param name="connectCode">连接状态</param>
         protected void SendConnect(ConnectCode connectCode)
         {
-            Send(PackageCode.Connect, new OperationConnect(connectCode));
+            WaitSend(PackageCode.Connect, new OperationConnect(connectCode));
         }
 
         /// <summary>
+        /// 加入发送缓冲区
+        /// </summary>
+        private void WaitSend(PackageCode packageCode, IOperation operation)
+        {
+            if (mSocket == null) return;
+            lock (mWaitSendDataQueue)
+            {
+                mWaitSendDataQueue.Enqueue(new PackageModel(packageCode, operation).ToPackageBuffer());
+            }
+            //可以开始发送
+            mSendWaiter.Set();
+        }
+        
+        /// <summary>
         /// 发送消息
         /// </summary>
-        private void Send(PackageCode packageCode, IOperation operation)
+        private void Send(byte[] data)
         {
             if (mSocket == null) return;
             try
             {
-                mSocket.Send(new PackageModel(packageCode, operation).ToPackageBuffer());
-                LastSendHeartbeatTime = TimeUtil.GetCurrentUtcTime();
+                if (mSocket.Connected)
+                    mSocket.Send(data);
+                else
+                    Logger.LogError("网络未连接");
             }
             catch (Exception e)
             {
@@ -175,13 +208,23 @@ namespace ESocket.Common
         }
 
         /// <summary>
-        /// 初始化监听通信的线程
+        /// 初始化接收消息的线程
         /// </summary>
-        private void InitListenReceiveThread()
+        private void InitReceiveThread()
         {
-            //与客户端通信的线程
-            mClientThread = new LoopThread(ListenReceiveThread) {IsBackground = true};
-            mClientThread.Start();
+            //接收消息的线程
+            mReceiveThread = new LoopThread(ReceiveThread) {IsBackground = true};
+            mReceiveThread.Start();
+        }
+        
+        /// <summary>
+        /// 初始化发送消息的线程
+        /// </summary>
+        private void InitSendThread()
+        {
+            //接收消息的线程
+            mSendThread = new LoopThread(SendThread) {IsBackground = true};
+            mSendThread.Start();
         }
 
         /// <summary>
@@ -196,7 +239,7 @@ namespace ESocket.Common
         /// <summary>
         /// 监听消息
         /// </summary>
-        private void ListenReceiveThread(LoopThread.Token token)
+        private void ReceiveThread(LoopThread.Token token)
         {
             if (mSocket == null) return;
             while (token.IsLooping)
@@ -239,6 +282,25 @@ namespace ESocket.Common
                     }
                 }
                 catch(Exception e)
+                {
+                    Logger.LogError(e);
+                }
+            }
+        }
+
+        private void SendThread(LoopThread.Token token)
+        {
+            if (mSocket == null) return;
+            while (token.IsLooping)
+            {
+                try
+                {
+                    if (mWaitSendDataQueue.Count > 0)
+                        Send(mWaitSendDataQueue.Dequeue());
+                    else
+                        mSendWaiter.WaitOne();//没有数据了，等待
+                }
+                catch (Exception e)
                 {
                     Logger.LogError(e);
                 }
